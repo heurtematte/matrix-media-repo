@@ -80,7 +80,7 @@ func DownloadMedia(r *http.Request, rctx rcontext.RequestContext, auth _apimeta.
 			return _responses.MediaBlocked()
 		}
 	}
-
+	rctx.Log.Debugf("Download Media called with auth: %s", auth)
 	media, stream, err := pipeline_download.Execute(rctx, server, mediaId, pipeline_download.DownloadOpts{
 		FetchRemoteIfNeeded: downloadRemote,
 		BlockForReadUntil:   blockFor,
@@ -114,7 +114,7 @@ func DownloadMedia(r *http.Request, rctx rcontext.RequestContext, auth _apimeta.
 		} else if errors.As(err, &redirect) {
 			return _responses.Redirect(redirect.RedirectUrl)
 		}
-		rctx.Log.Error("Unexpected error locating media: ", err)
+		rctx.Log.Error("Unexpected error locating media Download: ", err)
 		sentry.CaptureException(err)
 		return _responses.InternalServerError("Unexpected Error")
 	}

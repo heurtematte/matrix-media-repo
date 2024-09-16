@@ -98,7 +98,7 @@ func MediaInfo(r *http.Request, rctx rcontext.RequestContext, user _apimeta.User
 		} else if errors.Is(err, common.ErrMediaNotYetUploaded) {
 			return _responses.NotYetUploaded()
 		}
-		rctx.Log.Error("Unexpected error locating media: ", err)
+		rctx.Log.Error("Unexpected error locating media info: ", err)
 		sentry.CaptureException(err)
 		return _responses.InternalServerError("Unexpected Error")
 	}
@@ -135,7 +135,7 @@ func MediaInfo(r *http.Request, rctx rcontext.RequestContext, user _apimeta.User
 
 	thumbs, err := database.GetInstance().Thumbnails.Prepare(rctx).GetForMedia(record.Origin, record.MediaId)
 	if err != nil {
-		rctx.Log.Error("Unexpected error locating media thumbnails: ", err)
+		rctx.Log.Error("Unexpected error locating media info thumbnails: ", err)
 		sentry.CaptureException(err)
 		return _responses.InternalServerError("Unexpected Error")
 	}

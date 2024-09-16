@@ -94,6 +94,7 @@ func FederatedGet(ctx rcontext.RequestContext, reqUrl string, realHost string, d
 		}
 
 		// Override the host to be compliant with the spec
+		ctx.Log.Debug("Set header Host:" + realHost)
 		req.Header.Set("Host", realHost)
 		req.Header.Set("User-Agent", "matrix-media-repo")
 		req.Host = realHost
@@ -108,10 +109,12 @@ func FederatedGet(ctx rcontext.RequestContext, reqUrl string, realHost string, d
 			if err != nil {
 				return err
 			}
+			ctx.Log.Debug("destination:" + destination)
 			auth, err := CreateXMatrixHeader(ctx.Request.Host, destination, http.MethodGet, parsed.RequestURI(), nil, key.Key, key.Version)
 			if err != nil {
 				return err
 			}
+			ctx.Log.Debug("XMatrix header: " + auth)
 			req.Header.Set("Authorization", auth)
 		}
 
@@ -173,7 +176,8 @@ func FederatedGet(ctx rcontext.RequestContext, reqUrl string, realHost string, d
 			client.Transport = nil // Clear our TLS handler as we're out of the Matrix certificate verification steps
 			return nil
 		}
-
+		ctx.Log.Debugf("URL:%s", req.URL.String())
+		ctx.Log.Debugf("Header:%s", req.Header)
 		resp, err = client.Do(req)
 		if err != nil {
 			return err
